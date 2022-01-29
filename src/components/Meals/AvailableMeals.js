@@ -1,7 +1,7 @@
-import Card from '../UI/Card';
-import MealItem from './MealItem/MealItem';
-import classes from './AvailableMeals.module.css';
-import { useState, useEffect } from 'react';
+import Card from "../UI/Card";
+import MealItem from "./MealItem/MealItem";
+import classes from "./AvailableMeals.module.css";
+import { useState, useEffect } from "react";
 //! uploaded to firebase
 // const DUMMY_MEALS = [
 //   {
@@ -32,30 +32,47 @@ import { useState, useEffect } from 'react';
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMeals = async () => {
-
-     const data = await fetch("https://react-pizza-order-default-rtdb.firebaseio.com/meals.json");
-     const responseData = await data.json();
-     const loadedMeals = [];
-     for (const i in responseData) {
-       loadedMeals.push({
-         id: i,
-         name: responseData[i].name,
-         description: responseData[i].description,
-         price: responseData[i].price,
-       });
-     }
-     setMeals(loadedMeals); 
+      const data = await fetch(
+        "https://react-pizza-order-default-rtdb.firebaseio.com/meals.json"
+      );
+      const responseData = await data.json();
+      setIsLoading(false);
+      const loadedMeals = [];
+      for (const i in responseData) {
+        loadedMeals.push({
+          id: i,
+          name: responseData[i].name,
+          description: responseData[i].description,
+          price: responseData[i].price,
+        });
+      }
+      setMeals(loadedMeals);
     };
     fetchMeals();
-  
-    return () => {
 
-    };
+    return () => {};
   }, []);
-  
+
+  if (isLoading) {
+    return (
+      <section>
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            fontSize: "30px",
+            color: "white",
+          }}
+        >
+          Loading...
+        </p>
+      </section>
+    );
+  }
 
   const mealsList = meals.map((meal) => (
     <MealItem
